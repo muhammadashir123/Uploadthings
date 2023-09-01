@@ -1,13 +1,19 @@
 import connectMongoDB from "../../../../libs/mongoDb";
 import Topic from "../../../models/topic";
 import { NextResponse } from "next/server";
+
 export async function PUT(request, { params }) {
   const { id } = params;
-  const { newTitle: title, newDescription: description } = await request.json();
+  const {
+    newTitle: title,
+    newDescription: description,
+    newImage: image,
+  } = await request.json();
   await connectMongoDB();
-  await Topic.findByIdAndUpdate(id, { title, description });
+  await Topic.findByIdAndUpdate(id, { title, description, image });
   return NextResponse.json({ message: "Topic Updated" }, { status: 200 });
 }
+
 export async function GET(request, { params }) {
   const { id } = params;
   await connectMongoDB();
