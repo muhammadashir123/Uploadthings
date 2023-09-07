@@ -6,11 +6,12 @@ import { utapi } from "uploadthing/server";
 export async function GET(request, { params }) {
   try {
     const { id } = params;
+    console.log(id)
     await connectMongoDB();
-    const topic = await Topic.findById({ _id: id });
-    return Response(JSON.stringify(topic), { status: 200 });
+    const topic = await Topic.findById( id );
+    return new Response(JSON.stringify(topic), { status: 200 });
   } catch (error) {
-    return Response({ message: error });
+    return new Response({ message: error });
   }
 }
 
@@ -28,9 +29,9 @@ export async function PUT(request, { params }) {
       description,
       image,
     });
-    return Response(JSON.stringify(topic), { status: 200 });
+    return new Response(JSON.stringify(topic), { status: 200 });
   } catch (error) {
-    return Response({ message: "error" });
+    return new Response({ message: "error" });
   }
 }
 

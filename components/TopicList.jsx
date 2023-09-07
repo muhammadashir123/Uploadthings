@@ -5,8 +5,10 @@ import Link from "next/link";
 import RemoveBtn from "./RemoveBtn";
 import { HiPencilAlt } from "react-icons/hi";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function TopicList() {
+  const router = useRouter()
   const [topics, setTopics] = useState([]);
 
   useEffect(() => {
@@ -25,6 +27,11 @@ export default function TopicList() {
     getTopics();
   }, []);
 //   console.log(topics)
+
+const handleEdit = (id) => {
+  console.log(id)
+router.push(`/editTopic?id=${id}`)
+}
   
   return (
     <>
@@ -45,9 +52,9 @@ export default function TopicList() {
           </div>
           <div className="flex gap-1">
             <RemoveBtn id={item._id} topics={topics} setTopics={setTopics} />
-            <Link href={`/editTopic/${item._id}`}>
-              <HiPencilAlt size={24}></HiPencilAlt>
-            </Link>
+            {/* <Link href={`/editTopic?id=${item._id}`}> */}
+              <HiPencilAlt size={24} onClick={() => handleEdit(item._id)}></HiPencilAlt>
+            {/* </Link> */}
           </div>
         </div>
       ))}
