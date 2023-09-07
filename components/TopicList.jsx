@@ -14,7 +14,7 @@ export default function TopicList() {
   useEffect(() => {
     const getTopics = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/topics");
+        const res = await fetch("api/topics");
 
         const data = await res.json();
         setTopics(data.topics);

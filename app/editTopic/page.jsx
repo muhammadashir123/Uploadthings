@@ -21,7 +21,7 @@ export default function EditTopic() {
   useEffect(() => {
     const getTopic = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/topics/${paramId}`, {
+        const res = await fetch(`api/topics/${paramId}`, {
           cache: "no-store",
         });
         const apiData = await res.json();
@@ -56,7 +56,7 @@ export default function EditTopic() {
     e.preventDefault();
 
     try {
-      const res = await fetch(`http://localhost:3000/api/topics/${paramId}`, {
+      const res = await fetch(`api/topics/${paramId}`, {
         method: "PUT",
         headers: {
           "Content-type": "application/json",
