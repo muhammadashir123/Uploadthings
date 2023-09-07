@@ -1,39 +1,39 @@
-import React from "react";
+"use client"
+
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import RemoveBtn from "./RemoveBtn";
 import { HiPencilAlt } from "react-icons/hi";
 import Image from "next/image";
 
-const getTopics = async () => {
-  try {
-    const res = await fetch("http://localhost:3000/api/topics", {
-      cache: "no-store",
-    });
-    if (!res.ok) {
-      throw new Error("Failed to fetch topics");
-    }
-    // Add code here to handle the response, e.g., return or process the data
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    // Handle the error, e.g., logging or re-throwing
-    console.error(error);
-    console.log("Error loading Topics:", error);
-    throw error; // Re-throwing the error to propagate it further if needed
-  }
-};
+export default function TopicList() {
+  const [topics, setTopics] = useState([]);
 
-export default async function TopicList() {
-  const { topics } = await getTopics();
+  useEffect(() => {
+    const getTopics = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/api/topics");
+        
+        const data = await res.json();
+        setTopics(data.topics);
 
+      } catch (error) {
+        console.log("Error loading Topics:", error);
+      }
+    };
+
+    getTopics();
+  }, []);
+//   console.log(topics)
+  
   return (
     <>
-      {topics.map((item) => (
-        <div className="p-4 border border-slate-300 my-3 flex justify-between items-start gap-5">
+      {topics && topics.map((item) => (
+        <div className="p-4 border border-slate-300 my-3 flex justify-between items-start gap-5" key={item._id}>
           <div className="">
             <div className=" border-slate-50 bg-blue-500 h-[140px] w-[140px] mb-6 ">
               <Image
-                src={item.image}
+                src={item.image.imageUrl}
                 alt="Uploaded"
                 className="w-full h-full object-cover"
                 width={100}
@@ -44,7 +44,7 @@ export default async function TopicList() {
             <div>{item.description}</div>
           </div>
           <div className="flex gap-1">
-            <RemoveBtn id={item._id} />
+            <RemoveBtn id={item._id} topics={topics} setTopics={setTopics} />
             <Link href={`/editTopic/${item._id}`}>
               <HiPencilAlt size={24}></HiPencilAlt>
             </Link>

@@ -1,8 +1,7 @@
 import { createUploadthing } from "uploadthing/next";
 import type { FileRouter } from "uploadthing/next";
- 
+ import { utapi } from "uploadthing/server";
 const f = createUploadthing();
- 
 export const uploadRouter = {
   videoAndImage: f({
     image: {
@@ -46,7 +45,7 @@ export const uploadRouter = {
     },
   })
     .middleware(() => {
-      return { testMetadata: "lol" };
+      return { testMetadata: "" };
     })
     .onUploadComplete(({ metadata, file }) => {
       console.log("uploaded with the following metadata:", metadata);

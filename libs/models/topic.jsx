@@ -11,8 +11,14 @@ const TopicSchema = new Schema({
     required: [true, "desc is required"],
   },
   image: {
-    type: String,
-    required: [true, "Image is required for uploading"],
+    imageUrl: {
+      type: String,
+      required: true,
+    },
+    imageName: {
+      type: String,
+      required: true,
+    },
   },
 });
 const Topic = models.Topic || model("Topic", TopicSchema);

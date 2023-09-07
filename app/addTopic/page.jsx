@@ -5,18 +5,31 @@ import Image from "next/image";
 // import { set } from "mongoose";
 import { useRouter } from "next/navigation";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export default function AddTopic() {
-  const [title, setTitle] = useState("");
-  console.log("title", title);
-  const [description, setdescription] = useState("");
-  console.log("description", description);
-  const [image, setImageURL] = useState("");
+  const router = useRouter();
+  const [message, setMessage] = useState("");
+  const [data, setData] = useState({
+    title: "",
+    description: "",
+    imageName: "",
+    imageUrl: "",
+  });
+  // const [title, setTitle] = useState("");
+
+  // console.log("title", title);
+  // const [description, setdescription] = useState("");
+  // console.log("description", description);
+  // const [image, setImageURL] = useState("");
 
   const handleUploadComplete = (res) => {
     console.log("completed", res);
-    setImageURL(res[0].url);
+    setData((prev) => ({
+      ...prev,
+      imageName: res[0].fileKey,
+      imageUrl: res[0].url,
+    }));
   };
 
   const handleUploadError = (error) => {
@@ -24,28 +37,33 @@ export default function AddTopic() {
     console.error("Upload error:", error);
   };
 
-  console.log("imageURL:", image);
-  console.log(`env --- ${process.env.UPLOADTHING_SECRET}`);
-  const router = useRouter();
+  // console.log("imageURL:", data.imageUrl);
+  // console.log("imageName:", data.imageName);
+
+  // console.log(`env --- ${process.env.UPLOADTHING_SECRET}`);
 
   const handleSubmit = async (e) => {
-    console.log("####################", e);
+    // console.log("####################", e);
     e.preventDefault();
-    console.log(
-      `Submitting: title = ${title}, description = ${description}, image = ${image}`
-    );
+    // console.log(
+    //   `Submitting: title = ${data.title}, description = ${data.description}, image = ${data.imageUrl}`
+    // );
 
-    if (!title || !description || !image) {
-      alert("title and description are required");
+    if (!data.title || !data.description || !data.imageUrl) {
+      setMessage("Title and description are required  ");
       // return;
     }
     try {
-      const res = await fetch("http://localhost:3000/api/topics", {
+      const res = await fetch("http://localhost:3000/api/topics/new", {
         method: "POST",
         headers: {
           "content-type": "application/json",
         },
-        body: JSON.stringify({ title, description, image }),
+        body: JSON.stringify({
+          title: data.title,
+          description: data.description,
+          image: { imageUrl : data.imageUrl, imageName : data.imageName},
+        }),
       });
       if (res.ok) {
         console.log(res.ok);
@@ -55,53 +73,85 @@ export default function AddTopic() {
       }
     } catch (error) {
       console.log(error);
+      setMessage("An error occurred while adding the topic");
     }
   };
+  useEffect(() => {
+    if (message) {
+      const timeoutId = setTimeout(() => {
+        setMessage("Record is up"); // Clear the message after 5 seconds (adjust the time as needed)
+      }, 5000); // 5000 milliseconds = 5 seconds
+
+      // Clear the timeout when the component unmounts or when a new message is set
+      return () => clearTimeout(timeoutId);
+    }
+  }, [message]);
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-full">
-      <div className="flex justify-center w-full">
-        <div className=" border-slate-50 bg-blue-500 h-[140px] w-[140px] mb-6 ">
-          {image ? (
-            <Image
-              src={image}
-              alt="Uploaded"
-              className="w-full h-full object-cover"
-              width={100}
-              height={100}
-            />
-          ) : (
-            "ashir"
-          )}
+    <div>
+      {/* Pop-up message */}
+      {message && (
+        <div className="fixed bottom-0 left-0 right-0 bg-gray-800 text-white p-4 text-center">
+          {message}
         </div>
-      </div>
-      <div className="">
-        <UploadButton
-          className="ut-button:bg-red-500 ut-button:ut-readying:bg-red-500/50"
-          endpoint="imageUploader"
-          onClientUploadComplete={handleUploadComplete}
-          onUploadError={handleUploadError}
+      )}
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-full">
+        <div className="flex justify-center w-full">
+          <div className=" border-slate-50 bg-blue-500 h-[140px] w-[140px] mb-6 ">
+            {data.imageUrl ? (
+              <Image
+                src={data.imageUrl}
+                alt="Uploaded"
+                className="w-full h-full object-cover"
+                width={100}
+                height={100}
+              />
+            ) : (
+              ""
+            )}
+          </div>
+        </div>
+        <div className="">
+          <UploadButton
+            className="ut-button:bg-red-500 ut-button:ut-readying:bg-red-500/50"
+            endpoint="imageUploader"
+            onClientUploadComplete={handleUploadComplete}
+            onUploadError={handleUploadError}
+          />
+        </div>
+        <input
+          onChange={(e) => {
+            setData((prev) => ({
+              ...prev,
+              title: e.target.value
+            }));
+            // console.log(data.title)
+          }}
+          value={data.title}
+          className="border border-slate-500 px-8 py-2"
+          type="text"
+          placeholder="Topic Title"
         />
-      </div>
-      <input
-        onChange={(e) => setTitle(e.target.value)}
-        value={title}
-        className="border border-slate-500 px-8 py-2"
-        type="text"
-        placeholder="Topic Title"
-      />
-      <input
-        onChange={(e) => setdescription(e.target.value)}
-        value={description}
-        className="border border-slate-500 px-8 py-2"
-        type="text"
-        placeholder="Topic Description"
-      />
-      <button
-        type="submit"
-        className="bg-green-600 font-bold text-white py-3 px-6 w-fit"
-      >
-        Add Topic
-      </button>
-    </form>
+        <input
+          onChange={(e) => {
+            setData((prev) => ({
+              ...prev,
+              description: e.target.value
+            }));
+            // console.log(data.description)
+
+          }}
+          value={data.description}
+          className="border border-slate-500 px-8 py-2"
+          type="text"
+          placeholder="Topic Description"
+        />
+        <button
+          type="submit"
+          className="bg-green-600 font-bold text-white py-3 px-6 w-fit"
+        >
+          Add Topic
+        </button>
+      </form>
+    </div>
   );
 }

@@ -7,47 +7,52 @@ import Image from "next/image";
 
 export default function EditTopicForm({ id, title, description, image }) {
   const router = useRouter();
-  const [newTitle, setNewTitle] = useState(title);
-  const [newDescription, setNewDescription] = useState(description);
-  const [newImage, setNewImage] = useState(image);
+  const [formData, setFormData] = useState({
+    newTitle: title,
+    newDescription: description,
+    newImage: image,
+  });
 
   const handleUploadComplete = (res) => {
-    console.log("Upload complete:", res);
-    setNewImage(res[0].url);
+    setFormData({ ...formData, newImage: res[0].url });
   };
 
   const handleUploadError = (error) => {
-    console.log("error$$$$$$$$$$$$", error);
     console.error("Upload error:", error);
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(
-      `Submitting: title = ${newTitle}, description = ${newDescription}, image = ${newImage}`
+      `Submitting: title = ${formData.newTitle}, description = ${formData.newDescription}, image = ${formData.newImage}`
     );
+
     try {
       const res = await fetch(`http://localhost:3000/api/topics/${id}`, {
         method: "PUT",
         headers: {
           "Content-type": "application/json",
         },
-        body: JSON.stringify({ newTitle, newDescription, newImage }),
+        body: JSON.stringify(formData),
       });
+
       if (!res.ok) {
-        throw new error("Failed to update");
+        throw new Error("Failed to update");
       }
+
       router.push("/");
     } catch (error) {
       console.log(error);
     }
   };
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
       <div className="flex justify-center w-full">
-        <div className=" border-slate-50 bg-blue-500 h-[140px] w-[140px] mb-6 ">
-          {newImage ? (
+        <div className="border-slate-50 bg-blue-500 h-[140px] w-[140px] mb-6">
+          {formData.newImage ? (
             <Image
-              src={newImage}
+              src={formData.newImage}
               alt="Uploaded"
               className="w-full h-full object-cover"
               width={100}
@@ -66,17 +71,18 @@ export default function EditTopicForm({ id, title, description, image }) {
           onUploadError={handleUploadError}
         />
       </div>
-
       <input
-        onChange={(e) => setNewTitle(e.target.value)}
-        value={newTitle}
+        onChange={(e) => setFormData({ ...formData, newTitle: e.target.value })}
+        value={formData.newTitle}
         className="border border-slate-500 px-8 py-2"
         type="text"
         placeholder="Topic Title"
       />
       <input
-        onChange={(e) => setNewDescription(e.target.value)}
-        value={newDescription}
+        onChange={(e) =>
+          setFormData({ ...formData, newDescription: e.target.value })
+        }
+        value={formData.newDescription}
         className="border border-slate-500 px-8 py-2"
         type="text"
         placeholder="Topic Description"
