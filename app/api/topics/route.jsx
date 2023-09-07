@@ -1,5 +1,5 @@
 import connectMongoDB from "../../../libs/mongoDb";
-import Topic from "../../../libs/models/topic";
+import Topic from "../../../models/topic.model";
 import { NextResponse } from "next/server";
 
 export async function GET() {

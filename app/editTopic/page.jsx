@@ -7,10 +7,10 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 export default function EditTopic() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const paramId = searchParams.get('id')
-  console.log(paramId)
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const paramId = searchParams.get("id");
+  console.log(paramId);
   const [data, setData] = useState({
     title: "",
     description: "",
@@ -24,14 +24,14 @@ export default function EditTopic() {
         const res = await fetch(`http://localhost:3000/api/topics/${paramId}`, {
           cache: "no-store",
         });
-        const data= await res.json();
-        console.log(data)
+        const apiData = await res.json();
         setData({
-          title: data.title,
-          description: data.description,
-          imageName: data.imageName,
-          imageUrl: data.imageUrl,
+          title: apiData.title,
+          description: apiData.description,
+          imageName: apiData.image.imageName,
+          imageUrl: apiData.image.imageUrl,
         });
+        console.log(data?.imageUrl);
       } catch (error) {
         console.log(error);
       }
@@ -82,7 +82,7 @@ export default function EditTopic() {
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
       <div className="flex justify-center w-full">
         <div className=" border-slate-50 bg-blue-500 h-[140px] w-[140px] mb-6 ">
-          {data.imageUrl ? (
+          {data?.imageUrl && (
             <Image
               src={data.imageUrl}
               alt="Uploaded"
@@ -90,8 +90,6 @@ export default function EditTopic() {
               width={100}
               height={100}
             />
-          ) : (
-            "ashir"
           )}
         </div>
       </div>
@@ -108,7 +106,7 @@ export default function EditTopic() {
         onChange={(e) => {
           setData((prev) => ({
             ...prev,
-            title: e.target.value
+            title: e.target.value,
           }));
         }}
         value={data.title}
@@ -117,11 +115,10 @@ export default function EditTopic() {
         placeholder="Topic Title"
       />
       <input
-        onChange={(e) => 
-        {
+        onChange={(e) => {
           setData((prev) => ({
             ...prev,
-            description: e.target.value
+            description: e.target.value,
           }));
         }}
         value={data.description}

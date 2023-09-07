@@ -1,5 +1,5 @@
 import connectMongoDB from "../../../../libs/mongoDb";
-import Topic from "../../../../libs/models/topic";
+import Topic from "../../../../models/topic.model";
 
 export async function POST(request) {
   const { title, description, image } = await request.json();

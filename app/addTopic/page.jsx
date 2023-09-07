@@ -62,7 +62,7 @@ export default function AddTopic() {
         body: JSON.stringify({
           title: data.title,
           description: data.description,
-          image: { imageUrl : data.imageUrl, imageName : data.imageName},
+          image: { imageUrl: data.imageUrl, imageName: data.imageName },
         }),
       });
       if (res.ok) {
@@ -122,7 +122,7 @@ export default function AddTopic() {
           onChange={(e) => {
             setData((prev) => ({
               ...prev,
-              title: e.target.value
+              title: e.target.value,
             }));
             // console.log(data.title)
           }}
@@ -135,10 +135,9 @@ export default function AddTopic() {
           onChange={(e) => {
             setData((prev) => ({
               ...prev,
-              description: e.target.value
+              description: e.target.value,
             }));
             // console.log(data.description)
-
           }}
           value={data.description}
           className="border border-slate-500 px-8 py-2"
