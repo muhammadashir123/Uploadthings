@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import RemoveBtn from "./RemoveBtn";
+import RemoveBtn from "@/components/RemoveBtn";
 import { HiPencilAlt } from "react-icons/hi";
 import Image from "next/image";
 import { useRouter } from "next/navigation";

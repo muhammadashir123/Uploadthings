@@ -1,8 +1,7 @@
 "use client";
 import "@uploadthing/react/styles.css";
-import { UploadButton } from "../../src/utils/uploadthing";
-import Image from "next/image";
-// import { set } from "mongoose";
+import { UploadButton } from "@/src/utils/uploadthing";
+import Image from " next/image";
 import { useRouter } from "next/navigation";
 
 import React, { useState, useEffect } from "react";
@@ -16,12 +15,6 @@ export default function AddTopic() {
     imageName: "",
     imageUrl: "",
   });
-  // const [title, setTitle] = useState("");
-
-  // console.log("title", title);
-  // const [description, setdescription] = useState("");
-  // console.log("description", description);
-  // const [image, setImageURL] = useState("");
 
   const handleUploadComplete = (res) => {
     console.log("completed", res);
@@ -33,28 +26,20 @@ export default function AddTopic() {
   };
 
   const handleUploadError = (error) => {
-    console.log("error$$$$$$$$$$$$", error);
     console.error("Upload error:", error);
   };
 
-  // console.log("imageURL:", data.imageUrl);
-  // console.log("imageName:", data.imageName);
-
-  // console.log(`env --- ${process.env.UPLOADTHING_SECRET}`);
 
   const handleSubmit = async (e) => {
-    // console.log("####################", e);
     e.preventDefault();
-    // console.log(
-    //   `Submitting: title = ${data.title}, description = ${data.description}, image = ${data.imageUrl}`
-    // );
+   
 
     if (!data.title || !data.description || !data.imageUrl) {
       setMessage("Title and description are required  ");
-      // return;
+      return;
     }
     try {
-      const res = await fetch("api/topics/new", {
+      const res = await fetch("/api/topics/new", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -124,7 +109,6 @@ export default function AddTopic() {
               ...prev,
               title: e.target.value,
             }));
-            // console.log(data.title)
           }}
           value={data.title}
           className="border border-slate-500 px-8 py-2"
@@ -137,7 +121,6 @@ export default function AddTopic() {
               ...prev,
               description: e.target.value,
             }));
-            // console.log(data.description)
           }}
           value={data.description}
           className="border border-slate-500 px-8 py-2"

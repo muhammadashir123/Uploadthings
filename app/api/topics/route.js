@@ -1,19 +1,14 @@
 import connectMongoDB from "@/libs/mongoDb";
 import Topic from "@/models/topic.model";
 
-export async function POST(request) {
-  const { title, description, image } = await request.json();
+export async function GET() {
   try {
     await connectMongoDB();
-    const topic = await new Topic({ title, description, image });
-
-    await topic.save();
-
-    return new Response(JSON.stringify(topic), {
-      status: 201,
+    const topics = await Topic.find();
+    return new Response(JSON.stringify({ topics }), {
+      status: 200,
       headers: { "Content-Type": "application/json" },
     });
-    
   } catch (error) {
     return new Response(JSON.stringify({ message: error.toString() }), {
       status: 500,

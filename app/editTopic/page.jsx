@@ -2,7 +2,7 @@
 
 import "@uploadthing/react/styles.css";
 import { useRouter, useSearchParams } from "next/navigation";
-import { UploadButton } from "../../src/utils/uploadthing";
+import { UploadButton } from "@/src/utils/uploadthing";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
